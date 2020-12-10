@@ -1,0 +1,27 @@
+{
+    "app": {
+        "port": 3000
+    },
+    "db": {
+        "host": "35.204.109.8",
+        "user": "root",
+        "port": 3306,
+        "database": "advisor_dev",
+        "password": "3wAadoLIG3IxFh21021994"
+    },
+    "redis": {
+        "host": "127.0.0.1",
+        "port": 6379,
+        "db": null,
+        "password": null
+    },
+    "influx": {
+        "host": "127.0.0.1",
+        "database": "test",
+        "port": 8086
+    },
+    "tcp": {
+        "host": "127.0.0.1",
+        "port": 3000
+    }
+}
