@@ -11,11 +11,10 @@ module.exports = class TcpClient {
     connect(callback = () => {}) {
         let me = this;
         me.client.connect(port, host, function () {
-            console.log('Client connected');
+            console.log('Client: connected');
             this.address = me.client.address().address + ":" + me.client.address().port;
             callback(this.address);
             me.client.on('data', function (data) {
-                console.log(me.client.address().address + ' recieve ' + data);
                 let json_data = JSON.parse(data);
                 if (json_data.token) {
                     me.client.write(JSON.stringify({
@@ -24,7 +23,7 @@ module.exports = class TcpClient {
                 }
             });
             me.client.on('close', function () {
-                console.log('Connection closed: ' + me.client.address().address);
+                console.log('Client: Connection closed: ' + me.client.address().address);
             });
         });
     }
