@@ -1,4 +1,5 @@
 const config = require('config');
+const e = require('express');
 let redis = require("redis");
 
 let client = redis.createClient({
@@ -17,23 +18,36 @@ module.exports = class RedisStore {
         this.client = client;
     }
     push_hub_list(value) {
-        this.client.lpush("hubs", value, function (err, res) {
-            console.log(err, res);
+        this.client.sadd("hubs", value, function (err, res) {
+            if (!err) {
+                console.log("REDIS hubs", res);
+            } else {
+                console.log(err);
+            }
+            
         });
     }
     set_hub_token(id, token) {
         this.client.hmset("hub_tokens", [id, token], function (err, res) {
-            console.log(err, res);
+            if (!err) {
+                console.log("REDIS hub_tokens", res);
+            } else {
+                console.log(err);
+            }
         });
     }
     set_hub_status(id, value) {
         this.client.hmset("hub_states", [id, value], function (err, res) {
-            console.log(err, res);
+            if (!err) {
+                console.log("REDIS hub_states", res);
+            } else {
+                console.log(err);
+            }
         });
     }
     get(key) {
         this.client.get(key, function (err, res) {
-            console.log(err, res);
+            console.log("REDIS", err, res);
         });
 
     }
