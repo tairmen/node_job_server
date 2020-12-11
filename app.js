@@ -21,19 +21,24 @@ let front_ws = new FrontSocket(server);
 let hub_socket = new HubSocket();
 hub_socket.listen();
 
-// createSocketClientApi();
-
 let clients = [];
+
+function get_client_by_addr(addr) {
+    clients.find(el => {
+        return el.getAddr() == addr;
+    })
+}
 
 app.get('/create_socket_client', (req, res) => {
     let tcp = new TcpClient();
-    let address = tcp.client.address().address;
-    res.send({ address: address });
+    tcp.connect((address) => {
+        res.send({status: "ok", address: address});
+    });
     clients.push(tcp);
 });
 
 app.post('/socket_send', (req, res) => {
     let data = req.body;
     clients[0].send(data);
-    res.send('sended');
+    res.send({status: "ok"});
 });

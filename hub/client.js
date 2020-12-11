@@ -7,8 +7,13 @@ module.exports = class TcpClient {
     constructor() {
         let me = this;
         me.client = new net.Socket();
+    }
+    connect(callback = () => {}) {
+        let me = this;
         me.client.connect(port, host, function () {
-            console.log('Connected: ' + me.client.address().address);
+            console.log('Client connected');
+            this.address = me.client.address().address + ":" + me.client.address().port;
+            callback(this.address);
             me.client.on('data', function (data) {
                 console.log(me.client.address().address + ' recieve ' + data);
                 let json_data = JSON.parse(data);
@@ -25,6 +30,9 @@ module.exports = class TcpClient {
     }
     send(data) {
         this.client.write(JSON.stringify(data));
+    }
+    getAddr() {
+        return this.address;
     }
 }
 
