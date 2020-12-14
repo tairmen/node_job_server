@@ -20,7 +20,7 @@ module.exports = class RedisStore {
     push_hub_list(value) {
         this.client.sadd("hubs", value, function (err, res) {
             if (!err) {
-                console.log("REDIS hubs", res);
+                console.log("REDIS push_hub_list", res);
             } else {
                 console.log(err);
             }
@@ -30,7 +30,7 @@ module.exports = class RedisStore {
     set_hub_token(id, token) {
         this.client.hmset("hub_tokens", [id, token], function (err, res) {
             if (!err) {
-                console.log("REDIS hub_tokens", res);
+                console.log("REDIS set_hub_token", res);
             } else {
                 console.log(err);
             }
@@ -39,7 +39,17 @@ module.exports = class RedisStore {
     set_hub_status(id, value) {
         this.client.hmset("hub_states", [id, value], function (err, res) {
             if (!err) {
-                console.log("REDIS hub_states", res);
+                console.log("REDIS set_hub_status", res);
+            } else {
+                console.log(err);
+            }
+        });
+    }
+    are_id_exist(id, callback = () => {}) {
+        this.client.sismember("hubs", id, function (err, res) {
+            if (!err) {
+                callback(res)
+                console.log("REDIS are_id_exist", res);
             } else {
                 console.log(err);
             }

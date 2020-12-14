@@ -1,0 +1,17 @@
+
+Client: 127.0.0.1:52784: connected
+SERVER CONNECTED: 127.0.0.1:52784
+Client: 127.0.0.1:52784 send: {"auth": {"id": 10}}
+SERVER RECEIVED FROM: 127.0.0.1:52784 DATA: {"auth": {"id": 10}}
+SERVER SEND TO: 127.0.0.1:52784 DATA: {"auth":{"id":10},"status":"id exist"}
+Client: 127.0.0.1:52784 received: {"auth":{"id":10},"status":"id exist"}
+Client: 127.0.0.1:52784 send: {"auth": {"id": 5}}
+SERVER RECEIVED FROM: 127.0.0.1:52784 DATA: {"auth": {"id": 5}}
+SERVER SEND TO: 127.0.0.1:52784 DATA: {"token":"Q_66OdQWu"}
+Client: 127.0.0.1:52784 received: {"token":"Q_66OdQWu"}
+Client: 127.0.0.1:52784 send: {"token":"Q_66OdQWu"}
+SERVER RECEIVED FROM: 127.0.0.1:52784 DATA: {"token":"Q_66OdQWu"}
+Client: 127.0.0.1:52784 send: {"data": [543, 63, 765, 463]}
+SERVER RECEIVED FROM: 127.0.0.1:52784 DATA: {"data": [543, 63, 765, 463]}
+SERVER SEND TO: 127.0.0.1:52784 DATA: {"data":[543,63,765,463],"status":"ok"}
+Client: 127.0.0.1:52784 received: {"data":[543,63,765,463],"status":"ok"}

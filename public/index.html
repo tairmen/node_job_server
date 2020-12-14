@@ -7,6 +7,55 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsonlint/1.6.0/jsonlint.min.js"></script>
     <script scr="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"></script>
     <script>
+        let all_log = "";
+        let cur_address = "";
+        function fetch_hub_log() {
+            fetch('/hub_log', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((data) => {
+                        all_log = data.log;
+                        let select_tag = document.getElementById("log_select");
+                        let sel = select_tag.value;
+                        let spl = all_log.split('\n');
+                        // spl.forEach(lg => {
+                        //         if (lg.slice(0, 6) == "Client") {
+                        //             ser_log += "\n" + lg;
+                        //         }
+                        //     })
+                        if (sel == "All") {
+                            document.getElementById("log").value = data.log;
+                        }
+                        if (sel == "Server") {
+                            ser_log = "";
+                            spl.forEach(lg => {
+                                if (lg.slice(0, 6) == "SERVER") {
+                                    ser_log += "\n" + lg;
+                                }
+                            })
+                            document.getElementById("log").value = ser_log;
+                        }
+                        if (sel == "Clients") {
+                            cli_log = "";
+                            spl.forEach(lg => {
+                                if (lg.slice(0, 6) == "Client") {
+                                    cli_log += "\n" + lg;
+                                }
+                            })
+                            document.getElementById("log").value = cli_log;
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+        }
         window.onload = async function () {
             document.getElementById("send_button").onclick = function () {
                 try {
@@ -23,13 +72,14 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: str_res
+                            body: JSON.stringify({data: str_res, address: cur_address})
                         })
                             .then((response) => {
                                 return response.json();
                             })
                             .then((data) => {
                                 console.log(data);
+                                fetch_hub_log();
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -56,12 +106,17 @@
                     })
                     .then((data) => {
                         console.log(data);
+                        cur_address = data.address;
+                        fetch_hub_log();
                     })
                     .catch((error) => {
                         console.log(error);
                     })
             };
 
+            document.getElementById("reload_log").onclick = function () {
+                fetch_hub_log();
+            }
         }
     </script>
     <style>
@@ -94,12 +149,8 @@
             padding: 10px 0px;
         }
 
-        table,
-        th,
-        td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            padding: 5px 10px;
+        .select_log {
+            padding: 10px 5px;
         }
     </style>
 </head>
@@ -107,7 +158,7 @@
 <body>
     <div class="con_discon">
         <button id="connect_button">Connect</button>
-        <button id="disconnect_button">Disconnect</button>
+        <!-- <button id="disconnect_button">Disconnect</button> -->
     </div>
     <textarea id="source" rows="10" cols="30"></textarea>
     <div>
@@ -116,24 +167,15 @@
     </div>
 
     <pre id="result" class="pass">JSON is valid!</pre>
-    <table>
-        <thead></thead>
-        <col>
-        <colgroup span="2"></colgroup>
-        <colgroup span="2"></colgroup>
-        <tr>
-            <th colspan="2" scope="colgroup">Client</th>
-            <th colspan="2" scope="colgroup">Server</th>
-        </tr>
-        <tr>
-            <th scope="col">Request</th>
-            <th scope="col">Response</th>
-            <th scope="col">Request</th>
-            <th scope="col">Response</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div class="select_log">
+        <select id="log_select">
+            <option>All</option>
+            <option>Server</option>
+            <option>Clients</option>
+        </select>
+        <button id="reload_log">Reload</button>
+    </div>
+    <textarea readonly id="log" rows="20" cols="60"></textarea>
 </body>
 </body>
 
