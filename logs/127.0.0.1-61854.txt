@@ -1,0 +1,37 @@
+
+Client: 127.0.0.1:61854: connected
+SERVER CONNECTED: 127.0.0.1:61854
+Client: 127.0.0.1:61854 send: {"auth": {"id": 4}}
+SERVER RECEIVED FROM: 127.0.0.1:61854 DATA: {"auth": {"id": 4}}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"token":"j1DoKLO2Z"}
+Client: 127.0.0.1:61854 received: {"token":"j1DoKLO2Z"}
+Client: 127.0.0.1:61854 send: {"token":"j1DoKLO2Z"}
+SERVER RECEIVED FROM: 127.0.0.1:61854 DATA: {"token":"j1DoKLO2Z"}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 1}
+Client: 127.0.0.1:61854 received: {"ping": 1}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 2}
+Client: 127.0.0.1:61854 received: {"ping": 2}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 3}
+Client: 127.0.0.1:61854 received: {"ping": 3}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 4}
+Client: 127.0.0.1:61854 received: {"ping": 4}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 5}
+Client: 127.0.0.1:61854 received: {"ping": 5}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 6}
+Client: 127.0.0.1:61854 received: {"ping": 6}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 7}
+Client: 127.0.0.1:61854 received: {"ping": 7}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 8}
+Client: 127.0.0.1:61854 received: {"ping": 8}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"data": "kek"}
+Client: 127.0.0.1:61854 received: {"data": "kek"}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 9}
+Client: 127.0.0.1:61854 received: {"ping": 9}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 10}
+Client: 127.0.0.1:61854 received: {"ping": 10}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 11}
+Client: 127.0.0.1:61854 received: {"ping": 11}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 12}
+Client: 127.0.0.1:61854 received: {"ping": 12}
+SERVER SEND TO: 127.0.0.1:61854 DATA: {"ping": 13}
+Client: 127.0.0.1:61854 received: {"ping": 13}

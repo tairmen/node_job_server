@@ -9,13 +9,24 @@
     <script>
         let all_log = "";
         let cur_address = "";
-        function fetch_hub_log() {
-            fetch('/hub_log', {
-                method: 'GET',
+        function fetch_hub_log(curr, callback = () => { }) {
+            let address = undefined;
+            if (curr) {
+                address = cur_address;
+            } else {
+                let option = document.getElementById("log_select").value;
+                console.log(option);
+                if (option != "All") {
+                    address = option;
+                }
+            }
+            fetch(`/hub_log?address:${address}`, {
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
+                body: JSON.stringify({ address: address })
             })
                 .then((response) => {
                     return response.json();
@@ -23,6 +34,22 @@
                 .then((data) => {
                     all_log = data.log;
                     let select_tag = document.getElementById("log_select");
+                    if (data.addresses) {
+                        let options = [];
+                        for (i = 0; i < select_tag.length; i++) {
+                            options.push(select_tag.options[i].value);
+                        }
+                        data.addresses.forEach(element => {
+                            if (options.findIndex(el => {
+                                return element == el;
+                            }) == -1) {
+                                select_tag.innerHTML += "<option>" + element + "</option>";
+                            }
+                        });
+                        if (cur_address) {
+                            document.getElementById("log_select").value = cur_address;
+                        }
+                    }
                     let sel = select_tag.value;
                     let spl = all_log.split('\n');
                     // spl.forEach(lg => {
@@ -30,27 +57,30 @@
                     //             ser_log += "\n" + lg;
                     //         }
                     //     })
-                    if (sel == "All") {
-                        document.getElementById("log").value = data.log;
-                    }
-                    if (sel == "Server") {
-                        ser_log = "";
-                        spl.forEach(lg => {
-                            if (lg.slice(0, 6) == "SERVER") {
-                                ser_log += "\n" + lg;
-                            }
-                        })
-                        document.getElementById("log").value = ser_log;
-                    }
-                    if (sel == "Clients") {
-                        cli_log = "";
-                        spl.forEach(lg => {
-                            if (lg.slice(0, 6) == "Client") {
-                                cli_log += "\n" + lg;
-                            }
-                        })
-                        document.getElementById("log").value = cli_log;
-                    }
+
+                    document.getElementById("log").value = data.log;
+                    // if (sel == "All") {
+                    //     document.getElementById("log").value = data.log;
+                    // }
+                    // if (sel == "Server") {
+                    //     ser_log = "";
+                    //     spl.forEach(lg => {
+                    //         if (lg.slice(0, 6) == "SERVER") {
+                    //             ser_log += "\n" + lg;
+                    //         }
+                    //     })
+                    //     document.getElementById("log").value = ser_log;
+                    // }
+                    // if (sel == "Clients") {
+                    //     cli_log = "";
+                    //     spl.forEach(lg => {
+                    //         if (lg.slice(0, 6) == "Client") {
+                    //             cli_log += "\n" + lg;
+                    //         }
+                    //     })
+                    //     document.getElementById("log").value = cli_log;
+                    // }
+                    callback();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -91,7 +121,7 @@
                 }
             };
 
-            document.getElementById("send_all_server_button").onclick = function () {
+            document.getElementById("send_server_button").onclick = function () {
                 try {
                     let str_res = document.getElementById("server").value;
                     let result = jsonlint.parse(document.getElementById("server").value);
@@ -101,12 +131,12 @@
                         if (document.getElementById("reformat").checked) {
                             document.getElementById("server").value = JSON.stringify(result, null, "  ");
                         }
-                        fetch('/server_send_all', {
+                        fetch('/server_send', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ data: str_res })
+                            body: JSON.stringify({ data: str_res, address: cur_address })
                         })
                             .then((response) => {
                                 return response.json();
@@ -140,6 +170,10 @@
                     .then((data) => {
                         console.log(data);
                         cur_address = data.address;
+                        document.getElementById("client_name").innerHTML = "Client - " + cur_address;
+                        fetch_hub_log(true, () => {
+                            document.getElementById("log_select").value = cur_address;
+                        });
                     })
                     .catch((error) => {
                         console.log(error);
@@ -161,7 +195,7 @@
                     })
                     .then((data) => {
                         console.log(data);
-                        cur_address = data.address;
+                        document.getElementById("client_name").innerHTML = "Client";
                     })
                     .catch((error) => {
                         console.log(error);
@@ -179,12 +213,12 @@
                     let timeout = document.getElementById("auto_refresh_period").value;
                     refresh_interval = setInterval(() => {
                         fetch_hub_log();
-                    }, timeout*1000)
+                    }, timeout * 1000)
                 } else {
                     if (refresh_interval) {
                         clearInterval(refresh_interval);
                     }
-                    
+
                 }
             }
         }
@@ -247,7 +281,7 @@
 <body>
     <div class="send_blocks">
         <div class="send_block">
-            <h3>Client</h3>
+            <h4 id="client_name">Client</h4>
             <div class="con_discon">
                 <button id="connect_button">Connect</button>
                 <button id="disconnect_button">Disconnect</button>
@@ -259,10 +293,10 @@
             </div>
         </div>
         <div class="send_block">
-            <h3>Server</h3>
+            <h4>Server</h4>
             <textarea id="server" rows="10" cols="30"></textarea>
             <div>
-                <button id="send_all_server_button" class="send_button">Send All</button>
+                <button id="send_server_button" class="send_button">Send</button>
                 <input type="checkbox" value="yes" id="reformat"><label for="reformat">reformat JSON</label>
             </div>
         </div>
@@ -272,8 +306,6 @@
     <div class="select_log">
         <select id="log_select">
             <option>All</option>
-            <option>Server</option>
-            <option>Clients</option>
         </select>
         <button id="reload_log">Reload</button>
         <input type="checkbox" id="are_auto_refresh" name="refresh">

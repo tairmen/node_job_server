@@ -7,7 +7,8 @@ const RedisStore = require('./redis');
 let express = require('express');
 const fs = require('fs');
 const path = require('path');
-let ALL_FILE = '/logs/all.txt'; 
+const e = require('express');
+let ALL_FILE = 'logs';
 
 let app = express();
 app.use(express.json());
@@ -18,7 +19,14 @@ app.get('/', (req, res) => {
 
 let server = app.listen(port, () => {
     console.log(`Express listening on port: ${port}`);
-    fs.writeFileSync(path.join(__dirname, ALL_FILE), "");
+    fs.readdir(ALL_FILE, (err, files) => {
+        if (err) throw err;
+        for (const file of files) {
+            fs.unlink(path.join(ALL_FILE, file), err => {
+                if (err) throw err;
+            });
+        }
+    });
     let store = new RedisStore();
     store.delete_all();
 });
@@ -40,7 +48,7 @@ function get_client_by_addr(addr) {
 app.get('/create_socket_client', (req, res) => {
     let tcp = new TcpClient();
     tcp.connect((address) => {
-        res.send({ status: "ok", address: address});
+        res.send({ status: "ok", address: address });
     });
     clients.push(tcp);
 });
@@ -49,7 +57,7 @@ app.post('/destroy_socket_client', (req, res) => {
     let addr = req.body.address;
     let cli = get_client_by_addr(addr);
     cli.destroy();
-    res.send({ status: "ok"});
+    res.send({ status: "ok" });
 });
 
 app.post('/socket_send', (req, res) => {
@@ -58,19 +66,44 @@ app.post('/socket_send', (req, res) => {
     let cli = get_client_by_addr(addr);
     if (cli) {
         cli.send(data);
-        res.send({ status: "ok"});
+        res.send({ status: "ok" });
     } else {
-        res.send({ status: "need connect"});
+        res.send({ status: "need connect" });
     }
 });
 
-app.get('/hub_log', (req, res) => {
-    let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE), "utf8");
-    res.send({ status: "ok", log: str_log });
+app.post('/hub_log', (req, res) => {
+    let address = req.body.address;
+    console.log(address);
+    let addresses = [];
+    fs.readdirSync(path.join(__dirname, ALL_FILE)).forEach(file => {
+        if (file != "all.txt") {
+            let addr = file.replace(".txt", "");
+            addr = addr.replace("-", ":");
+            addresses.push(addr);
+        }
+    });
+    if (!address) {
+        let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE + "/all.txt"), "utf8");
+        res.send({ status: "ok", log: str_log, addresses: addresses });
+    } else {
+        let addr = address.replace(':', '-');
+        let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE + `/${addr}.txt`), "utf8");
+        res.send({ status: "ok", log: str_log, addresses: addresses });
+    }
+
+
 });
 
 app.post('/server_send_all', (req, res) => {
     let data = req.body.data;
     hub_socket.send_all(data);
-    res.send({ status: "ok"});
+    res.send({ status: "ok" });
+});
+
+app.post('/server_send', (req, res) => {
+    let data = req.body.data;
+    let addr = req.body.address;
+    let st = hub_socket.send_by_address(data, addr);
+    res.send({ status: st });
 });
