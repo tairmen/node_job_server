@@ -2,7 +2,8 @@ const config = require('config');
 const port = config.get('app.port');
 const FrontSocket = require('./ws');
 const HubSocket = require("./hub/index");
-let TcpClient = require("./hub/client")
+let TcpClient = require("./hub/client");
+const RedisStore = require('./redis');
 let express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -18,6 +19,8 @@ app.get('/', (req, res) => {
 let server = app.listen(port, () => {
     console.log(`Express listening on port: ${port}`);
     fs.writeFileSync(path.join(__dirname, ALL_FILE), "");
+    let store = new RedisStore();
+    store.delete_all();
 });
 
 let front_ws = new FrontSocket(server);
@@ -42,6 +45,13 @@ app.get('/create_socket_client', (req, res) => {
     clients.push(tcp);
 });
 
+app.post('/destroy_socket_client', (req, res) => {
+    let addr = req.body.address;
+    let cli = get_client_by_addr(addr);
+    cli.destroy();
+    res.send({ status: "ok"});
+});
+
 app.post('/socket_send', (req, res) => {
     let data = req.body.data;
     let addr = req.body.address;
@@ -57,4 +67,10 @@ app.post('/socket_send', (req, res) => {
 app.get('/hub_log', (req, res) => {
     let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE), "utf8");
     res.send({ status: "ok", log: str_log });
+});
+
+app.post('/server_send_all', (req, res) => {
+    let data = req.body.data;
+    hub_socket.send_all(data);
+    res.send({ status: "ok"});
 });

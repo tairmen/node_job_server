@@ -55,11 +55,14 @@ module.exports = class RedisStore {
             }
         });
     }
-    get(key) {
-        this.client.get(key, function (err, res) {
-            console.log("REDIS", err, res);
+    delete_all() {
+        this.client.del("hubs", "hub_states", "hub_tokens", function (err, res) {
+            if (!err) {
+                console.log("REDIS cleared", res);
+            } else {
+                console.log(err);
+            }
         });
-
     }
 }
 

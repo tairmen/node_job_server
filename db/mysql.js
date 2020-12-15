@@ -20,4 +20,15 @@ module.exports = class MySqlCon {
     constructor() {
         this.dbcon = dbcon;
     }
+    are_hub_exist(id, callback = () => {}) {
+        this.dbcon.query(`SELECT * from hubs where id=${id}`, 
+        function(err, results, fields) {
+            console.log("hub:", results);
+            if (results.length > 0) {
+                callback(true, results[0]);
+            } else {
+                callback(false);
+            }
+        })
+    }
 }

@@ -46,5 +46,8 @@ module.exports = class TcpClient {
     getAddr() {
         return this.address;
     }
+    destroy() {
+        this.client.destroy();
+    }
 }
 

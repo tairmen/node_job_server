@@ -11,75 +11,108 @@
         let cur_address = "";
         function fetch_hub_log() {
             fetch('/hub_log', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then((response) => {
+                    return response.json();
                 })
-                    .then((response) => {
-                        return response.json();
-                    })
-                    .then((data) => {
-                        all_log = data.log;
-                        let select_tag = document.getElementById("log_select");
-                        let sel = select_tag.value;
-                        let spl = all_log.split('\n');
-                        // spl.forEach(lg => {
-                        //         if (lg.slice(0, 6) == "Client") {
-                        //             ser_log += "\n" + lg;
-                        //         }
-                        //     })
-                        if (sel == "All") {
-                            document.getElementById("log").value = data.log;
-                        }
-                        if (sel == "Server") {
-                            ser_log = "";
-                            spl.forEach(lg => {
-                                if (lg.slice(0, 6) == "SERVER") {
-                                    ser_log += "\n" + lg;
-                                }
-                            })
-                            document.getElementById("log").value = ser_log;
-                        }
-                        if (sel == "Clients") {
-                            cli_log = "";
-                            spl.forEach(lg => {
-                                if (lg.slice(0, 6) == "Client") {
-                                    cli_log += "\n" + lg;
-                                }
-                            })
-                            document.getElementById("log").value = cli_log;
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    })
+                .then((data) => {
+                    all_log = data.log;
+                    let select_tag = document.getElementById("log_select");
+                    let sel = select_tag.value;
+                    let spl = all_log.split('\n');
+                    // spl.forEach(lg => {
+                    //         if (lg.slice(0, 6) == "Client") {
+                    //             ser_log += "\n" + lg;
+                    //         }
+                    //     })
+                    if (sel == "All") {
+                        document.getElementById("log").value = data.log;
+                    }
+                    if (sel == "Server") {
+                        ser_log = "";
+                        spl.forEach(lg => {
+                            if (lg.slice(0, 6) == "SERVER") {
+                                ser_log += "\n" + lg;
+                            }
+                        })
+                        document.getElementById("log").value = ser_log;
+                    }
+                    if (sel == "Clients") {
+                        cli_log = "";
+                        spl.forEach(lg => {
+                            if (lg.slice(0, 6) == "Client") {
+                                cli_log += "\n" + lg;
+                            }
+                        })
+                        document.getElementById("log").value = cli_log;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
         }
         window.onload = async function () {
-            document.getElementById("send_button").onclick = function () {
+            document.getElementById("send_client_button").onclick = function () {
                 try {
-                    let str_res = document.getElementById("source").value;
-                    let result = jsonlint.parse(document.getElementById("source").value);
+                    let str_res = document.getElementById("client").value;
+                    let result = jsonlint.parse(document.getElementById("client").value);
                     if (result) {
                         document.getElementById("result").innerHTML = "JSON is valid!";
                         document.getElementById("result").className = "pass";
                         if (document.getElementById("reformat").checked) {
-                            document.getElementById("source").value = JSON.stringify(result, null, "  ");
+                            document.getElementById("client").value = JSON.stringify(result, null, "  ");
                         }
                         fetch('/socket_send', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({data: str_res, address: cur_address})
+                            body: JSON.stringify({ data: str_res, address: cur_address })
                         })
                             .then((response) => {
                                 return response.json();
                             })
                             .then((data) => {
                                 console.log(data);
-                                fetch_hub_log();
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            })
+
+                    }
+                } catch (e) {
+                    document.getElementById("result").innerHTML = e;
+                    document.getElementById("result").className = "fail";
+                }
+            };
+
+            document.getElementById("send_all_server_button").onclick = function () {
+                try {
+                    let str_res = document.getElementById("server").value;
+                    let result = jsonlint.parse(document.getElementById("server").value);
+                    if (result) {
+                        document.getElementById("result").innerHTML = "JSON is valid!";
+                        document.getElementById("result").className = "pass";
+                        if (document.getElementById("reformat").checked) {
+                            document.getElementById("server").value = JSON.stringify(result, null, "  ");
+                        }
+                        fetch('/server_send_all', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ data: str_res })
+                        })
+                            .then((response) => {
+                                return response.json();
+                            })
+                            .then((data) => {
+                                console.log(data);
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -107,7 +140,28 @@
                     .then((data) => {
                         console.log(data);
                         cur_address = data.address;
-                        fetch_hub_log();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            };
+
+            document.getElementById("disconnect_button").onclick = function () {
+                document.getElementById("connect_button").disabled = false;
+                fetch('/destroy_socket_client', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ address: cur_address })
+                })
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log(data);
+                        cur_address = data.address;
                     })
                     .catch((error) => {
                         console.log(error);
@@ -116,6 +170,22 @@
 
             document.getElementById("reload_log").onclick = function () {
                 fetch_hub_log();
+            }
+
+            let refresh_interval;
+
+            document.getElementById('are_auto_refresh').onclick = function () {
+                if (document.getElementById('are_auto_refresh').checked) {
+                    let timeout = document.getElementById("auto_refresh_period").value;
+                    refresh_interval = setInterval(() => {
+                        fetch_hub_log();
+                    }, timeout*1000)
+                } else {
+                    if (refresh_interval) {
+                        clearInterval(refresh_interval);
+                    }
+                    
+                }
             }
         }
     </script>
@@ -141,7 +211,7 @@
             border: 2px solid #933;
         }
 
-        #send_button {
+        .send_button {
             padding: 5px 20px;
         }
 
@@ -152,18 +222,50 @@
         .select_log {
             padding: 10px 5px;
         }
+
+        .send_blocks {
+            display: flex;
+            width: 500px;
+        }
+
+        .send_block {
+            flex: 1;
+        }
+
+        #server {
+            margin-top: 40px;
+        }
+
+        #auto_refresh_period {
+            margin-right: 10px;
+            margin-left: 10px;
+            width: 50px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="con_discon">
-        <button id="connect_button">Connect</button>
-        <!-- <button id="disconnect_button">Disconnect</button> -->
-    </div>
-    <textarea id="source" rows="10" cols="30"></textarea>
-    <div>
-        <button id="send_button">Send</button>
-        <input type="checkbox" value="yes" id="reformat"><label for="reformat">reformat JSON</label>
+    <div class="send_blocks">
+        <div class="send_block">
+            <h3>Client</h3>
+            <div class="con_discon">
+                <button id="connect_button">Connect</button>
+                <button id="disconnect_button">Disconnect</button>
+            </div>
+            <textarea id="client" rows="10" cols="30"></textarea>
+            <div>
+                <button id="send_client_button" class="send_button">Send</button>
+                <input type="checkbox" value="yes" id="reformat"><label for="reformat">reformat JSON</label>
+            </div>
+        </div>
+        <div class="send_block">
+            <h3>Server</h3>
+            <textarea id="server" rows="10" cols="30"></textarea>
+            <div>
+                <button id="send_all_server_button" class="send_button">Send All</button>
+                <input type="checkbox" value="yes" id="reformat"><label for="reformat">reformat JSON</label>
+            </div>
+        </div>
     </div>
 
     <pre id="result" class="pass">JSON is valid!</pre>
@@ -174,6 +276,9 @@
             <option>Clients</option>
         </select>
         <button id="reload_log">Reload</button>
+        <input type="checkbox" id="are_auto_refresh" name="refresh">
+        <label for="scales">Autorefresh in</label><input type="number" id="auto_refresh_period" name="period" min="1"
+            value="10"><span>seconds</span>
     </div>
     <textarea readonly id="log" rows="20" cols="60"></textarea>
 </body>
