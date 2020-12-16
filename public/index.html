@@ -60,6 +60,9 @@
                         if (data.hub) {
                             let gen_html = "";
                             for (let prop in data.hub) {
+                                if (prop == "authorized" || prop == "disconnected") {
+                                    data.hub[prop] = new Date(data.hub[prop]).toLocaleString();
+                                }
                                 gen_html += `<p>${prop}: <b>${data.hub[prop]}</b></p>`;
                             }
                             document.getElementById("hub_info").innerHTML = gen_html;
@@ -69,6 +72,9 @@
                         if (data.hub) {
                             let gen_html = "";
                             for (let prop in data.hub) {
+                                if (prop == "authorized" || prop == "disconnected") {
+                                    data.hub[prop] = new Date(data.hub[prop]).toLocaleString();
+                                }
                                 gen_html += `<p>${prop}: <b>${data.hub[prop]}</b></p>`;
                             }
                             document.getElementById("hub_select_info").innerHTML = gen_html;

@@ -39,40 +39,11 @@ module.exports = class HubSocket {
                 try {
                     me.log_write(sock, '\nSERVER RECEIVED FROM: ' + sock_addr + ' DATA: ' + data)
                     if (json_data.auth && json_data.auth.id) {
-                        me.db.are_hub_exist(json_data.auth.id, (exist, res) => {
-                            if (exist) {
-                                sock.hub_name = res.name;
-                                sock.hub_code = res.code_hub;
-                                me.store.push_hub_list(json_data.auth.id, sock_addr, res);
-                                sock.token = shortid.generate();
-                                sock.id = json_data.auth.id;
-                                me.store.set_hub_token(json_data.auth.id, sock.token);
-                                let send_data = JSON.stringify({ token: sock.token });
-                                me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
-                                sock.write(send_data);
-                            } else {
-                                json_data.message = "hub not exist in db";
-                                json_data.status = "error";
-                                let send_data = JSON.stringify(json_data);
-                                me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
-                                sock.write(send_data);
-                            }
-                        })
+                        me.receive_auth(json_data, sock);
                     } else if (json_data.token) {
                         me.store.set_hub_status(sock.id, true);
                     } else if (json_data.data) {
-                        if (sock.token) {
-                            json_data.status = "ok";
-                            let send_data = JSON.stringify(json_data);
-                            me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
-                            sock.write(send_data);
-                        } else {
-                            json_data.status = "error";
-                            json_data.message = "need auth";
-                            let send_data = JSON.stringify(json_data);
-                            me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
-                            sock.write(send_data);
-                        }
+                        me.receive_data(json_data, sock);
                     } else {
                         json_data.message = "no valid";
                         json_data.status = "error";
@@ -87,6 +58,9 @@ module.exports = class HubSocket {
             });
             sock.on('close', function (data) {
                 me.clear_sock_interval(sock);
+                if (sock.id && sock.token) {
+                    me.store.push_disconnect_date(sock_addr);
+                }
                 let index = me.sockets.findIndex(function (o) {
                     return o.remoteAddress === sock.remoteAddress && o.remotePort === sock.remotePort;
                 })
@@ -94,6 +68,45 @@ module.exports = class HubSocket {
                 me.log_write(sock , '\nSERVER CLOSED: ' + sock_addr);
             });
         });
+    }
+    receive_auth(json_data, sock) {
+        let me = this;
+        let sock_addr = sock.remoteAddress + ':' + sock.remotePort;
+        me.db.are_hub_exist(json_data.auth.id, (exist, res) => {
+            if (exist) {
+                sock.hub_name = res.name;
+                sock.hub_code = res.code_hub;
+                me.store.push_hub_list(json_data.auth.id, sock_addr, res);
+                sock.token = shortid.generate();
+                sock.id = json_data.auth.id;
+                me.store.set_hub_token(json_data.auth.id, sock.token);
+                let send_data = JSON.stringify({ token: sock.token });
+                me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
+                sock.write(send_data);
+            } else {
+                json_data.message = "hub not exist in db";
+                json_data.status = "error";
+                let send_data = JSON.stringify(json_data);
+                me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
+                sock.write(send_data);
+            }
+        })
+    }
+    receive_data(json_data, sock) {
+        let me = this;
+        let sock_addr = sock.remoteAddress + ':' + sock.remotePort;
+        if (sock.token) {
+            json_data.status = "ok";
+            let send_data = JSON.stringify(json_data);
+            me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
+            sock.write(send_data);
+        } else {
+            json_data.status = "error";
+            json_data.message = "need auth";
+            let send_data = JSON.stringify(json_data);
+            me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
+            sock.write(send_data);
+        }
     }
     get_sock_by_address(address) {
         let sock = this.sockets.find(el => {

@@ -25,10 +25,31 @@ module.exports = class RedisStore {
                 console.log(err);
             } 
         });
+        data.authorized = new Date().toISOString();
         let push_data = JSON.stringify(data);
         this.client.hmset("hub_authed", [addr, push_data], function (err, res) {
             if (!err) {
                 console.log("REDIS hub_authed", res);
+            } else {
+                console.log(err);
+            }
+        });
+    }
+    push_disconnect_date(addr) {
+        let me = this;
+        let disconnected = new Date().toISOString();
+        me.client.hmget("hub_authed", addr, function (err, res) {
+            if (!err) {
+                let push_data = JSON.parse(res);
+                push_data.disconnected = disconnected;
+                push_data = JSON.stringify(push_data);
+                me.client.hmset("hub_authed", [addr, push_data], function (err, res) {
+                    if (!err) {
+                        console.log("REDIS disconnect date", res);
+                    } else {
+                        console.log(err);
+                    }
+                });
             } else {
                 console.log(err);
             }
@@ -55,7 +76,6 @@ module.exports = class RedisStore {
     get_authed_hub(id, callback = () => {}) {
         this.client.hmget("hub_authed", id, function (err, res) {
             if (!err) {
-                console.log("REDIS get_authed_hub");
                 callback(res);
             } else {
                 console.log(err);
