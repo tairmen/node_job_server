@@ -46,19 +46,36 @@
                                 select_tag.innerHTML += "<option>" + element + "</option>";
                             }
                         });
-                        if (cur_address) {
-                            document.getElementById("log_select").value = cur_address;
-                        }
                     }
-                    let sel = select_tag.value;
-                    let spl = all_log.split('\n');
+                    // let sel = select_tag.value;
+                    // let spl = all_log.split('\n');
                     // spl.forEach(lg => {
                     //         if (lg.slice(0, 6) == "Client") {
                     //             ser_log += "\n" + lg;
                     //         }
                     //     })
 
-                    document.getElementById("log").value = data.log;
+                    if (curr) {
+                        document.getElementById("log").value = data.log;
+                        if (data.hub) {
+                            let gen_html = "";
+                            for (let prop in data.hub) {
+                                gen_html += `<p>${prop}: <b>${data.hub[prop]}</b></p>`;
+                            }
+                            document.getElementById("hub_info").innerHTML = gen_html;
+                        }
+                    } else {
+                        document.getElementById("all_log").value = data.log;
+                        if (data.hub) {
+                            let gen_html = "";
+                            for (let prop in data.hub) {
+                                gen_html += `<p>${prop}: <b>${data.hub[prop]}</b></p>`;
+                            }
+                            document.getElementById("hub_select_info").innerHTML = gen_html;
+                        }
+                    }
+
+
                     // if (sel == "All") {
                     //     document.getElementById("log").value = data.log;
                     // }
@@ -88,8 +105,8 @@
         }
         window.onload = async function () {
             document.getElementById("send_client_button").onclick = function () {
+                let str_res = document.getElementById("client").value;
                 try {
-                    let str_res = document.getElementById("client").value;
                     let result = jsonlint.parse(document.getElementById("client").value);
                     if (result) {
                         document.getElementById("result").innerHTML = "JSON is valid!";
@@ -97,28 +114,27 @@
                         if (document.getElementById("reformat").checked) {
                             document.getElementById("client").value = JSON.stringify(result, null, "  ");
                         }
-                        fetch('/socket_send', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ data: str_res, address: cur_address })
-                        })
-                            .then((response) => {
-                                return response.json();
-                            })
-                            .then((data) => {
-                                console.log(data);
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            })
-
                     }
                 } catch (e) {
                     document.getElementById("result").innerHTML = e;
                     document.getElementById("result").className = "fail";
                 }
+                fetch('/socket_send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ data: str_res, address: cur_address })
+                })
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log(data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
             };
 
             document.getElementById("send_server_button").onclick = function () {
@@ -203,6 +219,10 @@
             };
 
             document.getElementById("reload_log").onclick = function () {
+                fetch_hub_log(true);
+            }
+
+            document.getElementById("reload_select_log").onclick = function () {
                 fetch_hub_log();
             }
 
@@ -212,7 +232,7 @@
                 if (document.getElementById('are_auto_refresh').checked) {
                     let timeout = document.getElementById("auto_refresh_period").value;
                     refresh_interval = setInterval(() => {
-                        fetch_hub_log();
+                        fetch_hub_log(true);
                     }, timeout * 1000)
                 } else {
                     if (refresh_interval) {
@@ -266,6 +286,24 @@
             flex: 1;
         }
 
+        .client_log_blocks {
+            display: flex;
+            width: 800px;
+        }
+
+        .log_block_1 {
+            flex: 5;
+        }
+
+        .log_block_2 {
+            flex: 3;
+            padding: 10px;
+        }
+
+        p {
+            margin: 5px 0px !important;
+        }
+
         #server {
             margin-top: 40px;
         }
@@ -303,16 +341,33 @@
     </div>
 
     <pre id="result" class="pass">JSON is valid!</pre>
-    <div class="select_log">
-        <select id="log_select">
-            <option>All</option>
-        </select>
-        <button id="reload_log">Reload</button>
-        <input type="checkbox" id="are_auto_refresh" name="refresh">
-        <label for="scales">Autorefresh in</label><input type="number" id="auto_refresh_period" name="period" min="1"
-            value="10"><span>seconds</span>
+    <h5>Current client</h5>
+    <div class="client_log_blocks">
+        <div class="log_block_1">
+            <div class="select_log">
+                <button id="reload_log">Reload</button>
+                <input type="checkbox" id="are_auto_refresh" name="refresh">
+                <label for="scales">Autorefresh in</label><input type="number" id="auto_refresh_period" name="period"
+                    min="1" value="10"><span>seconds</span>
+            </div>
+            <textarea readonly id="log" rows="20" cols="60"></textarea>
+        </div>
+        <div class="log_block_2" id="hub_info"></div>
     </div>
-    <textarea readonly id="log" rows="20" cols="60"></textarea>
+    <h5>Select client to show log</h5>
+    <div class="client_log_blocks">
+        <div class="log_block_1">
+            <div class="select_log">
+                <select id="log_select">
+                    <option>All</option>
+                </select>
+                <button id="reload_select_log">Reload</button>
+            </div>
+            <textarea readonly id="all_log" rows="20" cols="60"></textarea>
+        </div>
+        <div class="log_block_2" id="hub_select_info">
+        </div>
+    </div>
 </body>
 </body>
 

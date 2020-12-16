@@ -13,6 +13,8 @@ let ALL_FILE = 'logs';
 let app = express();
 app.use(express.json());
 
+let store = new RedisStore();
+
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: 'public' })
 });
@@ -27,7 +29,6 @@ let server = app.listen(port, () => {
             });
         }
     });
-    let store = new RedisStore();
     store.delete_all();
 });
 
@@ -89,7 +90,19 @@ app.post('/hub_log', (req, res) => {
     } else {
         let addr = address.replace(':', '-');
         let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE + `/${addr}.txt`), "utf8");
-        res.send({ status: "ok", log: str_log, addresses: addresses });
+        store.get_authed_hub(address, (data) => {
+            let hub = null;
+            if (data && data.length > 0) {
+                hub = JSON.parse(data[0]);
+                if (hub) {
+                    delete hub.created_at;
+                    delete hub.updated_at;
+                    delete hub.status;
+                    delete hub.description;
+                }
+            }
+            res.send({ status: "ok", log: str_log, addresses: addresses, hub: hub });
+        });
     }
 
 

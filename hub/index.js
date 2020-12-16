@@ -25,29 +25,36 @@ module.exports = class HubSocket {
     listen() {
         let me = this;
         me.server.on('connection', function (sock) {
-            console.log('CONNECTED: ' + sock.remoteAddress + ':' + sock.remotePort);
-            me.log_write(sock, '\nSERVER CONNECTED: ' + sock.remoteAddress + ':' + sock.remotePort)
+            let sock_addr = sock.remoteAddress + ':' + sock.remotePort;
+            console.log('CONNECTED: ' + sock_addr);
+            me.log_write(sock, '\nSERVER CONNECTED: ' + sock_addr)
             me.sockets.push(sock);
             sock.on('data', function (data) {
+                let json_data = {};
                 try {
-                    let json_data = JSON.parse(data);
-                    me.log_write(sock, '\nSERVER RECEIVED FROM: ' + sock.remoteAddress + ':' + sock.remotePort + ' DATA: ' + data)
+                    json_data = JSON.parse(data);
+                } catch (e) {
+                    json_data.error = "not json";
+                }
+                try {
+                    me.log_write(sock, '\nSERVER RECEIVED FROM: ' + sock_addr + ' DATA: ' + data)
                     if (json_data.auth && json_data.auth.id) {
                         me.db.are_hub_exist(json_data.auth.id, (exist, res) => {
                             if (exist) {
                                 sock.hub_name = res.name;
                                 sock.hub_code = res.code_hub;
-                                me.store.push_hub_list(json_data.auth.id);
+                                me.store.push_hub_list(json_data.auth.id, sock_addr, res);
                                 sock.token = shortid.generate();
                                 sock.id = json_data.auth.id;
                                 me.store.set_hub_token(json_data.auth.id, sock.token);
                                 let send_data = JSON.stringify({ token: sock.token });
-                                me.log_write(sock , '\nSERVER SEND TO: ' + sock.remoteAddress + ':' + sock.remotePort + ' DATA: ' + send_data);
+                                me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
                                 sock.write(send_data);
                             } else {
-                                json_data.status = "hub not exist in db";
+                                json_data.message = "hub not exist in db";
+                                json_data.status = "error";
                                 let send_data = JSON.stringify(json_data);
-                                me.log_write(sock , '\nSERVER SEND TO: ' + sock.remoteAddress + ':' + sock.remotePort + ' DATA: ' + send_data);
+                                me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
                                 sock.write(send_data);
                             }
                         })
@@ -57,34 +64,34 @@ module.exports = class HubSocket {
                         if (sock.token) {
                             json_data.status = "ok";
                             let send_data = JSON.stringify(json_data);
-                            me.log_write(sock , '\nSERVER SEND TO: ' + sock.remoteAddress + ':' + sock.remotePort + ' DATA: ' + send_data);
+                            me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
                             sock.write(send_data);
                         } else {
-                            json_data.status = "need auth";
+                            json_data.status = "error";
+                            json_data.message = "need auth";
                             let send_data = JSON.stringify(json_data);
-                            me.log_write(sock , '\nSERVER SEND TO: ' + sock.remoteAddress + ':' + sock.remotePort + ' DATA: ' + send_data);
+                            me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
                             sock.write(send_data);
                         }
                     } else {
-                        json_data.status = "no valid";
+                        json_data.message = "no valid";
+                        json_data.status = "error";
                         let send_data = JSON.stringify(json_data);
-                        me.log_write(sock , '\nSERVER SEND TO: ' + sock.remoteAddress + ':' + sock.remotePort + ' DATA: ' + send_data);
+                        me.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + send_data);
                         sock.write(send_data);
                     }
                     me.add_interval(sock);
-
-
                 } catch (e) {
                     console.log(e)
                 }
             });
             sock.on('close', function (data) {
-                clear_sock_interval(sock);
+                me.clear_sock_interval(sock);
                 let index = me.sockets.findIndex(function (o) {
                     return o.remoteAddress === sock.remoteAddress && o.remotePort === sock.remotePort;
                 })
                 if (index !== -1) me.sockets.splice(index, 1);
-                me.log_write(sock , '\nSERVER CLOSED: ' + sock.remoteAddress + ':' + sock.remotePort);
+                me.log_write(sock , '\nSERVER CLOSED: ' + sock_addr);
             });
         });
     }
@@ -97,14 +104,16 @@ module.exports = class HubSocket {
     }
     send_all(message) {
         this.sockets.forEach(function (sock, index, array) {
-            this.log_write(sock , '\nSERVER SEND TO: ' + sock.remoteAddress + ':' + sock.remotePort + ' DATA: ' + message);
+            let sock_addr = sock.remoteAddress + ':' + sock.remotePort;
+            this.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + message);
             sock.write(message);
         });
     }
     send_by_address(message, address) {
         let sock = this.get_sock_by_address(address);
         if (sock) {
-            this.log_write(sock , '\nSERVER SEND TO: ' + sock.remoteAddress + ':' + sock.remotePort + ' DATA: ' + message);
+            let sock_addr = sock.remoteAddress + ':' + sock.remotePort;
+            this.log_write(sock , '\nSERVER SEND TO: ' + sock_addr + ' DATA: ' + message);
             sock.write(message);
             return "ok";
         } else {
@@ -129,8 +138,11 @@ module.exports = class HubSocket {
     }
     clear_sock_interval(sock) {
         let addr = sock.remoteAddress + ':' + sock.remotePort;
-        clearInterval(this.ping_intervals[addr].interval);
-        delete this.ping_intervals[addr];
+        if (this.ping_intervals[addr] && this.ping_intervals[addr].interval) {
+            clearInterval(this.ping_intervals[addr].interval);
+            delete this.ping_intervals[addr];
+        }
+        
     }
     log_write(sock, message) {
         let addr = sock.remoteAddress + '-' + sock.remotePort;

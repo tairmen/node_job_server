@@ -103,199 +103,59 @@ SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 45}
 Client: 127.0.0.1:57876 received: {"ping": 45}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 46}
 Client: 127.0.0.1:57876 received: {"ping": 46}
-Client: 127.0.0.1:58134: connected
-SERVER CONNECTED: 127.0.0.1:58134
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 47}
 Client: 127.0.0.1:57876 received: {"ping": 47}
-Client: 127.0.0.1:58134 send: {"auth": {"id": 5}}
-SERVER RECEIVED FROM: 127.0.0.1:58134 DATA: {"auth": {"id": 5}}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"auth":{"id":5},"message":"hub not exist in db","status":"error"}
-Client: 127.0.0.1:58134 received: {"auth":{"id":5},"message":"hub not exist in db","status":"error"}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 48}
 Client: 127.0.0.1:57876 received: {"ping": 48}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 1}
-Client: 127.0.0.1:58134 received: {"ping": 1}
-Client: 127.0.0.1:58134 send: {"auth": {"id": 6}}
-SERVER RECEIVED FROM: 127.0.0.1:58134 DATA: {"auth": {"id": 6}}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"auth":{"id":6},"message":"hub not exist in db","status":"error"}
-Client: 127.0.0.1:58134 received: {"auth":{"id":6},"message":"hub not exist in db","status":"error"}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 49}
 Client: 127.0.0.1:57876 received: {"ping": 49}
-Client: 127.0.0.1:58134 send: {"auth": {"id": 4}}
-SERVER RECEIVED FROM: 127.0.0.1:58134 DATA: {"auth": {"id": 4}}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"token":"1Wsc9sjxo"}
-Client: 127.0.0.1:58134 received: {"token":"1Wsc9sjxo"}
-Client: 127.0.0.1:58134 send: {"token":"1Wsc9sjxo"}
-SERVER RECEIVED FROM: 127.0.0.1:58134 DATA: {"token":"1Wsc9sjxo"}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 50}
 Client: 127.0.0.1:57876 received: {"ping": 50}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 1}
-Client: 127.0.0.1:58134 received: {"ping": 1}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 51}
 Client: 127.0.0.1:57876 received: {"ping": 51}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 2}
-Client: 127.0.0.1:58134 received: {"ping": 2}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 52}
 Client: 127.0.0.1:57876 received: {"ping": 52}
-SERVER CONNECTED: 127.0.0.1:58162
-Client: 127.0.0.1:58162: connected
-Client: 127.0.0.1:58162 send: {"auth": {"id": 10}}
-SERVER RECEIVED FROM: 127.0.0.1:58162 DATA: {"auth": {"id": 10}}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"token":"CbXqXaYOT"}
-Client: 127.0.0.1:58162 received: {"token":"CbXqXaYOT"}
-Client: 127.0.0.1:58162 send: {"token":"CbXqXaYOT"}
-SERVER RECEIVED FROM: 127.0.0.1:58162 DATA: {"token":"CbXqXaYOT"}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 3}
-Client: 127.0.0.1:58134 received: {"ping": 3}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 53}
 Client: 127.0.0.1:57876 received: {"ping": 53}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 1}
-Client: 127.0.0.1:58162 received: {"ping": 1}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 4}
-Client: 127.0.0.1:58134 received: {"ping": 4}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 54}
 Client: 127.0.0.1:57876 received: {"ping": 54}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 2}
-Client: 127.0.0.1:58162 received: {"ping": 2}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 5}
-Client: 127.0.0.1:58134 received: {"ping": 5}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 55}
 Client: 127.0.0.1:57876 received: {"ping": 55}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 3}
-Client: 127.0.0.1:58162 received: {"ping": 3}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 6}
-Client: 127.0.0.1:58134 received: {"ping": 6}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 56}
 Client: 127.0.0.1:57876 received: {"ping": 56}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 4}
-Client: 127.0.0.1:58162 received: {"ping": 4}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 7}
-Client: 127.0.0.1:58134 received: {"ping": 7}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 57}
 Client: 127.0.0.1:57876 received: {"ping": 57}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 5}
-Client: 127.0.0.1:58162 received: {"ping": 5}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 8}
-Client: 127.0.0.1:58134 received: {"ping": 8}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 58}
 Client: 127.0.0.1:57876 received: {"ping": 58}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 6}
-Client: 127.0.0.1:58162 received: {"ping": 6}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 9}
-Client: 127.0.0.1:58134 received: {"ping": 9}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 59}
 Client: 127.0.0.1:57876 received: {"ping": 59}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 7}
-Client: 127.0.0.1:58162 received: {"ping": 7}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 10}
-Client: 127.0.0.1:58134 received: {"ping": 10}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 60}
 Client: 127.0.0.1:57876 received: {"ping": 60}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 8}
-Client: 127.0.0.1:58162 received: {"ping": 8}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 11}
-Client: 127.0.0.1:58134 received: {"ping": 11}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 61}
 Client: 127.0.0.1:57876 received: {"ping": 61}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 9}
-Client: 127.0.0.1:58162 received: {"ping": 9}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 12}
-Client: 127.0.0.1:58134 received: {"ping": 12}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 62}
 Client: 127.0.0.1:57876 received: {"ping": 62}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 10}
-Client: 127.0.0.1:58162 received: {"ping": 10}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 13}
-Client: 127.0.0.1:58134 received: {"ping": 13}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 63}
 Client: 127.0.0.1:57876 received: {"ping": 63}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 11}
-Client: 127.0.0.1:58162 received: {"ping": 11}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 14}
-Client: 127.0.0.1:58134 received: {"ping": 14}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 64}
 Client: 127.0.0.1:57876 received: {"ping": 64}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 12}
-Client: 127.0.0.1:58162 received: {"ping": 12}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 15}
-Client: 127.0.0.1:58134 received: {"ping": 15}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 65}
 Client: 127.0.0.1:57876 received: {"ping": 65}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 13}
-Client: 127.0.0.1:58162 received: {"ping": 13}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 16}
-Client: 127.0.0.1:58134 received: {"ping": 16}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 66}
 Client: 127.0.0.1:57876 received: {"ping": 66}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 14}
-Client: 127.0.0.1:58162 received: {"ping": 14}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 17}
-Client: 127.0.0.1:58134 received: {"ping": 17}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 67}
 Client: 127.0.0.1:57876 received: {"ping": 67}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 15}
-Client: 127.0.0.1:58162 received: {"ping": 15}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 18}
-Client: 127.0.0.1:58134 received: {"ping": 18}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 68}
 Client: 127.0.0.1:57876 received: {"ping": 68}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 16}
-Client: 127.0.0.1:58162 received: {"ping": 16}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 19}
-Client: 127.0.0.1:58134 received: {"ping": 19}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 69}
 Client: 127.0.0.1:57876 received: {"ping": 69}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 17}
-Client: 127.0.0.1:58162 received: {"ping": 17}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 20}
-Client: 127.0.0.1:58134 received: {"ping": 20}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 70}
 Client: 127.0.0.1:57876 received: {"ping": 70}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 18}
-Client: 127.0.0.1:58162 received: {"ping": 18}
-Client: 127.0.0.1:58277: connected
-SERVER CONNECTED: 127.0.0.1:58277
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 21}
-Client: 127.0.0.1:58134 received: {"ping": 21}
-Client: 127.0.0.1:58277 send: {"auth": {"id": 7}}
-SERVER RECEIVED FROM: 127.0.0.1:58277 DATA: {"auth": {"id": 7}}
-SERVER SEND TO: 127.0.0.1:58277 DATA: {"token":"R6IvbBzyE"}
-Client: 127.0.0.1:58277 received: {"token":"R6IvbBzyE"}
-Client: 127.0.0.1:58277 send: {"token":"R6IvbBzyE"}
-SERVER RECEIVED FROM: 127.0.0.1:58277 DATA: {"token":"R6IvbBzyE"}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 71}
 Client: 127.0.0.1:57876 received: {"ping": 71}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 19}
-Client: 127.0.0.1:58162 received: {"ping": 19}
-Client: 127.0.0.1:58277 send: {"auth": {"id": 8}}
-SERVER RECEIVED FROM: 127.0.0.1:58277 DATA: {"auth": {"id": 8}}
-SERVER SEND TO: 127.0.0.1:58277 DATA: {"token":"AHYJExw9V"}
-Client: 127.0.0.1:58277 received: {"token":"AHYJExw9V"}
-Client: 127.0.0.1:58277 send: {"token":"AHYJExw9V"}
-SERVER RECEIVED FROM: 127.0.0.1:58277 DATA: {"token":"AHYJExw9V"}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 22}
-Client: 127.0.0.1:58134 received: {"ping": 22}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 72}
 Client: 127.0.0.1:57876 received: {"ping": 72}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 20}
-Client: 127.0.0.1:58162 received: {"ping": 20}
-SERVER SEND TO: 127.0.0.1:58277 DATA: {"ping": 1}
-Client: 127.0.0.1:58277 received: {"ping": 1}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 23}
-Client: 127.0.0.1:58134 received: {"ping": 23}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 73}
 Client: 127.0.0.1:57876 received: {"ping": 73}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 21}
-Client: 127.0.0.1:58162 received: {"ping": 21}
-SERVER SEND TO: 127.0.0.1:58277 DATA: {"ping": 2}
-Client: 127.0.0.1:58277 received: {"ping": 2}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 24}
-Client: 127.0.0.1:58134 received: {"ping": 24}
 SERVER SEND TO: 127.0.0.1:57876 DATA: {"ping": 74}
 Client: 127.0.0.1:57876 received: {"ping": 74}
-SERVER SEND TO: 127.0.0.1:58162 DATA: {"ping": 22}
-Client: 127.0.0.1:58162 received: {"ping": 22}
-SERVER SEND TO: 127.0.0.1:58277 DATA: {"ping": 3}
-Client: 127.0.0.1:58277 received: {"ping": 3}
-SERVER SEND TO: 127.0.0.1:58134 DATA: {"ping": 25}
-Client: 127.0.0.1:58134 received: {"ping": 25}
