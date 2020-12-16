@@ -23,7 +23,7 @@ module.exports = class RedisStore {
                 console.log("REDIS push_hub_list", res);
             } else {
                 console.log(err);
-            } 
+            }
         });
         data.authorized = new Date().toISOString();
         let push_data = JSON.stringify(data);
@@ -73,8 +73,8 @@ module.exports = class RedisStore {
             }
         });
     }
-    get_authed_hub(id, callback = () => {}) {
-        this.client.hmget("hub_authed", id, function (err, res) {
+    get_authed_hub(addr, callback = () => { }) {
+        this.client.hmget("hub_authed", addr, function (err, res) {
             if (!err) {
                 callback(res);
             } else {
@@ -82,7 +82,37 @@ module.exports = class RedisStore {
             }
         });
     }
-    are_id_exist(id, callback = () => {}) {
+    get_all_hubs_text(addrs, callback = () => { }) {
+        this.client.hgetall("hub_authed", function (err, res) {
+            if (!err) {
+                let texts = {};
+                if (!res) {
+                    res = {};
+                }
+                addrs.forEach(element => {
+                    let finded = false;
+                    for (let addr in res) {
+                        if (addr == element) {
+                            finded = true;
+                            let json = JSON.parse(res[addr]);
+                            let id = json.id.toString();
+                            let authorized = json.authorized;
+                            let disconnected = json.disconnected ? json.disconnected : "open";
+                            let txt = `${id}__${authorized}__${disconnected}`;
+                            texts[element] = txt;
+                        }
+                    }
+                    if (!finded) {
+                        texts[element] = element;
+                    }
+                });
+                callback(texts);
+            } else {
+                console.log(err);
+            }
+        });
+    }
+    are_id_exist(id, callback = () => { }) {
         this.client.sismember("hubs", id, function (err, res) {
             if (!err) {
                 callback(res)

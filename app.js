@@ -84,28 +84,29 @@ app.post('/hub_log', (req, res) => {
             addresses.push(addr);
         }
     });
-    if (!address) {
-        let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE + "/all.txt"), "utf8");
-        res.send({ status: "ok", log: str_log, addresses: addresses });
-    } else {
-        let addr = address.replace(':', '-');
-        let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE + `/${addr}.txt`), "utf8");
-        store.get_authed_hub(address, (data) => {
-            let hub = null;
-            if (data && data.length > 0) {
-                hub = JSON.parse(data[0]);
-                if (hub) {
-                    delete hub.created_at;
-                    delete hub.updated_at;
-                    delete hub.status;
-                    delete hub.description;
+    store.get_all_hubs_text(addresses, (hubs_texts) => {
+        // console.log(addresses, hubs_texts)
+        if (!address) {
+            let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE + "/all.txt"), "utf8");
+            res.send({ status: "ok", log: str_log, addresses: hubs_texts });
+        } else {
+            let addr = address.replace(':', '-');
+            let str_log = fs.readFileSync(path.join(__dirname, ALL_FILE + `/${addr}.txt`), "utf8");
+            store.get_authed_hub(address, (data) => {
+                let hub = null;
+                if (data && data.length > 0) {
+                    hub = JSON.parse(data[0]);
+                    if (hub) {
+                        delete hub.created_at;
+                        delete hub.updated_at;
+                        delete hub.status;
+                        delete hub.description;
+                    }
                 }
-            }
-            res.send({ status: "ok", log: str_log, addresses: addresses, hub: hub });
-        });
-    }
-
-
+                res.send({ status: "ok", log: str_log, addresses: hubs_texts, hub: hub});
+            });
+        }
+    });
 });
 
 app.post('/server_send_all', (req, res) => {

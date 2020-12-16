@@ -20,6 +20,7 @@
                     address = option;
                 }
             }
+            console.log(address)
             fetch(`/hub_log?address:${address}`, {
                 method: 'POST',
                 headers: {
@@ -39,13 +40,14 @@
                         for (i = 0; i < select_tag.length; i++) {
                             options.push(select_tag.options[i].value);
                         }
-                        data.addresses.forEach(element => {
-                            if (options.findIndex(el => {
-                                return element == el;
-                            }) == -1) {
-                                select_tag.innerHTML += "<option>" + element + "</option>";
-                            }
-                        });
+                        console.log(data.addresses);
+                        select_tag.innerHTML = `<option value="All">All</option>`;
+                        let html_to_push = "";
+                        for (let val in data.addresses) {
+                            let element = data.addresses[val];
+                            html_to_push += `<option value="${val}">${element}</option>`;
+                        }
+                        select_tag.innerHTML += html_to_push;
                     }
                     // let sel = select_tag.value;
                     // let spl = all_log.split('\n');
@@ -66,6 +68,8 @@
                                 gen_html += `<p>${prop}: <b>${data.hub[prop]}</b></p>`;
                             }
                             document.getElementById("hub_info").innerHTML = gen_html;
+                        } else {
+                            document.getElementById("hub_info").innerHTML = "";
                         }
                     } else {
                         document.getElementById("all_log").value = data.log;
@@ -193,9 +197,7 @@
                         console.log(data);
                         cur_address = data.address;
                         document.getElementById("client_name").innerHTML = "Client - " + cur_address;
-                        fetch_hub_log(true, () => {
-                            document.getElementById("log_select").value = cur_address;
-                        });
+                        fetch_hub_log(true);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -365,7 +367,7 @@
         <div class="log_block_1">
             <div class="select_log">
                 <select id="log_select">
-                    <option>All</option>
+                    <option value="All">All</option>
                 </select>
                 <button id="reload_select_log">Reload</button>
             </div>
