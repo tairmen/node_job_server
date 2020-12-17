@@ -18,7 +18,9 @@
     "influx": {
         "host": "127.0.0.1",
         "database": "test",
-        "port": 8086
+        "port": 8086,
+        "username": null,
+        "password": null
     },
     "tcp": {
         "host": "127.0.0.1",

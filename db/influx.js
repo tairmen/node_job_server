@@ -5,6 +5,8 @@ let influx = new Influx.InfluxDB({
     host: config.get('influx.host'),
     database: config.get('influx.database'),
     port: config.get('influx.port'),
+    username:  config.get('influx.username'),
+    password: config.get('influx.password'),
 });
 
 module.exports = class InfluxDbCon {

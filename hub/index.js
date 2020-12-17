@@ -5,6 +5,7 @@ const net = require('net');
 const shortid = require('shortid');
 const RedisStore = require('../redis');
 const MySqlCon = require('../db/mysql');
+const InfluxDB = require('../db/influx');
 const fs = require('fs');
 const path = require('path');
 const { json } = require('express');
@@ -19,6 +20,7 @@ module.exports = class HubSocket {
         this.sockets = [];
         this.store = new RedisStore();
         this.db = new MySqlCon();
+        this.influx = new InfluxDB();
         this.ping_intervals = {};
         this.max_quiet = 10;
     }
