@@ -20,7 +20,7 @@ module.exports = class RedisStore {
     push_hub_list(id, addr, data) {
         this.client.sadd("hubs", id, function (err, res) {
             if (!err) {
-                console.log("REDIS push_hub_list", res);
+                console.log("REDIS push_hub_list", id, res);
             } else {
                 console.log(err);
             }
@@ -29,7 +29,16 @@ module.exports = class RedisStore {
         let push_data = JSON.stringify(data);
         this.client.hmset("hub_authed", [addr, push_data], function (err, res) {
             if (!err) {
-                console.log("REDIS hub_authed", res);
+                console.log("REDIS hub_authed add", addr, res);
+            } else {
+                console.log(err);
+            }
+        });
+    }
+    pop_hub_list(addr) {
+        this.client.hdel("hub_authed", addr, function (err, res) {
+            if (!err) {
+                console.log("REDIS hub_authed remove", addr, res);
             } else {
                 console.log(err);
             }
@@ -45,7 +54,7 @@ module.exports = class RedisStore {
                 push_data = JSON.stringify(push_data);
                 me.client.hmset("hub_authed", [addr, push_data], function (err, res) {
                     if (!err) {
-                        console.log("REDIS disconnect date", res);
+                        console.log("REDIS disconnect date", addr, res);
                     } else {
                         console.log(err);
                     }
@@ -96,8 +105,8 @@ module.exports = class RedisStore {
                             finded = true;
                             let json = JSON.parse(res[addr]);
                             let id = json.id.toString();
-                            let authorized = json.authorized;
-                            let disconnected = json.disconnected ? json.disconnected : "open";
+                            let authorized = new Date(json.authorized).toLocaleString();
+                            let disconnected = json.disconnected ? new Date(json.disconnected).toLocaleString() : "open";
                             let txt = `${id}__${authorized}__${disconnected}`;
                             texts[element] = txt;
                         }
